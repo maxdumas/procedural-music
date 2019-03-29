@@ -12,6 +12,10 @@ StartAudioContext(Tone.context, 'button').then(async () => {
     harmonySynth.set('detune', -1200);
     harmonySynth.volume.value = -15;
 
+    let leadSynth = new Tone.Synth({
+        volume: -15,
+    }).toMaster();
+
     let kickSynth = new Tone.Synth({
         oscillator: {
             frequency: 70,
@@ -95,6 +99,19 @@ StartAudioContext(Tone.context, 'button').then(async () => {
         ['3:2', { notes: ['D5', 'D4', 'G4', 'B4'], duration: '8n.' }],
         ['3:3', { notes: ['D5', 'D4', 'G4', 'B4'] }],
     ]).start();
+
+    let leadPart1 = new Tone.Pattern((time, note) => {
+        leadSynth.triggerAttackRelease(note, '16n', time);
+    }, ['C4', 'E4', 'G4', 'B4', 'D5'], 'upDown');
+    leadPart1.interval = '16n';
+    leadPart1.start().stop('1m');
+
+    let leadPart2 = new Tone.Pattern((time, note) => {
+        leadSynth.triggerAttackRelease(note, '16n', time);
+    }, ['C4', 'E4', 'G4', 'B4', 'E5'], 'upDown');
+    leadPart2.interval = '16n';
+    leadPart2.start('2m').stop('3m');
+
 
     Tone.Transport.loop = true;
     Tone.Transport.loopStart = '0';
