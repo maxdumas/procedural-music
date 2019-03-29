@@ -67,28 +67,30 @@ StartAudioContext(Tone.context, 'button').then(() => {
     snarePart.loopEnd = '1m';
     snarePart.start();
 
-    let harmonyPart = new Tone.Part((time, notes) => {
-        harmonySynth.triggerAttackRelease(notes, '8n', time);
+    let harmonyPart = new Tone.Part((time, value) => {
+        const { notes, duration = '8n' } = value;
+        console.log(duration);
+        harmonySynth.triggerAttackRelease(notes, duration, time);
     }, [
-        ['0:0', ['C4', 'E4', 'G4', 'B4']],
-        ['0:1', ['C4', 'E4', 'G4', 'B4']],
-        ['0:2', ['C4', 'E4', 'G4', 'B4']],
-        ['0:3', ['C4', 'E4', 'G4', 'B4']],
+        ['0:0', { notes: ['C4', 'E4', 'G4', 'B4'] }],
+        ['0:1', { notes: ['C4', 'E4', 'G4', 'B4'] }],
+        ['0:2', { notes: ['C4', 'E4', 'G4', 'B4'], duration: '8n.' }],
+        ['0:3', { notes: ['C4', 'E4', 'G4', 'B4'] }],
 
-        ['1:0', ['C4', 'E4', 'G4', 'B4']],
-        ['1:1', ['C4', 'E4', 'G4', 'B4']],
-        ['1:2', ['C4', 'E4', 'G4', 'B4']],
-        ['1:3', ['C4', 'E4', 'G4', 'B4']],
+        ['1:0', { notes: ['C4', 'E4', 'G4', 'B4'] }],
+        ['1:1', { notes: ['C4', 'E4', 'G4', 'B4'] }],
+        ['1:2', { notes: ['C4', 'E4', 'G4', 'B4'], duration: '8n.' }],
+        ['1:3', { notes: ['C4', 'E4', 'G4', 'B4'] }],
 
-        ['2:0', ['D5', 'E4', 'G4', 'B4']],
-        ['2:1', ['D5', 'E4', 'G4', 'B4']],
-        ['2:2', ['D5', 'E4', 'G4', 'B4']],
-        ['2:3', ['D5', 'E4', 'G4', 'B4']],
+        ['2:0', { notes: ['D5', 'E4', 'G4', 'B4'] }],
+        ['2:1', { notes: ['D5', 'E4', 'G4', 'B4'] }],
+        ['2:2', { notes: ['D5', 'E4', 'G4', 'B4'], duration: '8n.' }],
+        ['2:3', { notes: ['D5', 'E4', 'G4', 'B4'] }],
 
-        ['3:0', ['D5', 'D4', 'G4', 'B4']],
-        ['3:1', ['D5', 'D4', 'G4', 'B4']],
-        ['3:2', ['D5', 'D4', 'G4', 'B4']],
-        ['3:3', ['D5', 'D4', 'G4', 'B4']],
+        ['3:0', { notes: ['D5', 'D4', 'G4', 'B4'] }],
+        ['3:1', { notes: ['D5', 'D4', 'G4', 'B4'] }],
+        ['3:2', { notes: ['D5', 'D4', 'G4', 'B4'], duration: '8n.' }],
+        ['3:3', { notes: ['D5', 'D4', 'G4', 'B4'] }],
     ]).start();
 
     Tone.Transport.loop = true;
