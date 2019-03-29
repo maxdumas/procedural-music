@@ -1,26 +1,30 @@
 import StartAudioContext from 'startaudiocontext';
 import Tone from 'tone';
 
-StartAudioContext(Tone.context, 'button').then(() => {
-    let harmonySynth = new Tone.PolySynth(4, Tone.Synth).toMaster();
+StartAudioContext(Tone.context, 'button').then(async () => {
+    let reverb = new Tone.Reverb(0.5);
+    await reverb.generate();
+    let harmonySynth = new Tone.PolySynth(4, Tone.Synth)
+        .chain(
+            new Tone.AutoFilter('16n', 'A4').start(),
+            Tone.Master,
+        );
     harmonySynth.set('detune', -1200);
-    harmonySynth.volume.value = -12;
+    harmonySynth.volume.value = -15;
 
-    let kickSynth =
-        new Tone.Synth({
-            oscillator: {
-                frequency: 70,
-                type: 'sine'
-            },
-            envelope: {
-                attack: 0.01,
-                decay: 0.05,
-                sustain: 0.01,
-                release: 0.01,
-            },
-            volume: 10
-        })
-        .toMaster();
+    let kickSynth = new Tone.Synth({
+        oscillator: {
+            frequency: 70,
+            type: 'sine'
+        },
+        envelope: {
+            attack: 0.01,
+            decay: 0.05,
+            sustain: 0.01,
+            release: 0.01,
+        },
+        volume: 5
+    }).chain(Tone.Master);
 
     let snareColorSynth = new Tone.Synth({
         oscillator: {
@@ -33,8 +37,8 @@ StartAudioContext(Tone.context, 'button').then(() => {
             sustain: 0.01,
             release: 0.01,
         },
-        volume: -10,
-    }).toMaster();
+        volume: 0,
+    }).chain(reverb, Tone.Master);
     let snareNoiseSynth = new Tone.NoiseSynth({
         noise: {
             type: 'pink',
@@ -42,11 +46,11 @@ StartAudioContext(Tone.context, 'button').then(() => {
         envelope: {
             attack: 0.001,
             decay: 0.3,
-            sustain: 0,
-            release: 0.01,
+            sustain: 0.1,
+            release: 0.5,
         },
-        volume: -10
-    }).toMaster();
+        volume: 0
+    }).chain(reverb, Tone.Master);
 
     let kickPart = new Tone.Part(time => {
         kickSynth.triggerAttackRelease(70, '8n', time);
@@ -69,7 +73,6 @@ StartAudioContext(Tone.context, 'button').then(() => {
 
     let harmonyPart = new Tone.Part((time, value) => {
         const { notes, duration = '8n' } = value;
-        console.log(duration);
         harmonySynth.triggerAttackRelease(notes, duration, time);
     }, [
         ['0:0', { notes: ['C4', 'E4', 'G4', 'B4'] }],

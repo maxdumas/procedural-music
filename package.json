@@ -12,5 +12,8 @@
   "dependencies": {
     "startaudiocontext": "^1.2.1",
     "tone": "^13.4.9"
-  }
+  },
+  "browserslist": [
+    "since 2017-06"
+  ]
 }
