@@ -2,8 +2,10 @@ import StartAudioContext from 'startaudiocontext';
 import Tone from 'tone';
 
 StartAudioContext(Tone.context, 'button').then(() => {
-    let leadSynth = new Tone.PolySynth(4, Tone.Synth).toMaster();
-    leadSynth.volume.value = -10;
+    let harmonySynth = new Tone.PolySynth(4, Tone.Synth).toMaster();
+    harmonySynth.set('detune', -1200);
+    harmonySynth.volume.value = -12;
+
     let kickSynth =
         new Tone.Synth({
             oscillator: {
@@ -53,7 +55,7 @@ StartAudioContext(Tone.context, 'button').then(() => {
     kickPart.loop = true;
     kickPart.loopStart = '0';
     kickPart.loopEnd = '1m';
-    kickPart.start('0m');
+    kickPart.start();
 
     let snarePart = new Tone.Part(time => {
         snareColorSynth.triggerAttackRelease(180, '16n', time);
@@ -63,19 +65,31 @@ StartAudioContext(Tone.context, 'button').then(() => {
     snarePart.loop = true;
     snarePart.loopStart = '0';
     snarePart.loopEnd = '1m';
-    snarePart.start('0m');
+    snarePart.start();
 
-    new Tone.Loop(time => {
-        leadSynth.triggerAttackRelease(['C4', 'E4', 'G4', 'B4'], '8n', time);
-    }, '4n').start('0m').stop('2m');
+    let harmonyPart = new Tone.Part((time, notes) => {
+        harmonySynth.triggerAttackRelease(notes, '8n', time);
+    }, [
+        ['0:0', ['C4', 'E4', 'G4', 'B4']],
+        ['0:1', ['C4', 'E4', 'G4', 'B4']],
+        ['0:2', ['C4', 'E4', 'G4', 'B4']],
+        ['0:3', ['C4', 'E4', 'G4', 'B4']],
 
-    new Tone.Loop(time => {
-        leadSynth.triggerAttackRelease(['D5', 'E4', 'G4', 'B4'], '8n', time);
-    }, '4n').start('2m').stop('3m');
+        ['1:0', ['C4', 'E4', 'G4', 'B4']],
+        ['1:1', ['C4', 'E4', 'G4', 'B4']],
+        ['1:2', ['C4', 'E4', 'G4', 'B4']],
+        ['1:3', ['C4', 'E4', 'G4', 'B4']],
 
-    new Tone.Loop(time => {
-        leadSynth.triggerAttackRelease(['D5', 'D4', 'G4', 'B4'], '8n', time);
-    }, '4n').start('3m').stop('4m');
+        ['2:0', ['D5', 'E4', 'G4', 'B4']],
+        ['2:1', ['D5', 'E4', 'G4', 'B4']],
+        ['2:2', ['D5', 'E4', 'G4', 'B4']],
+        ['2:3', ['D5', 'E4', 'G4', 'B4']],
+
+        ['3:0', ['D5', 'D4', 'G4', 'B4']],
+        ['3:1', ['D5', 'D4', 'G4', 'B4']],
+        ['3:2', ['D5', 'D4', 'G4', 'B4']],
+        ['3:3', ['D5', 'D4', 'G4', 'B4']],
+    ]).start();
 
     Tone.Transport.loop = true;
     Tone.Transport.loopStart = '0';
